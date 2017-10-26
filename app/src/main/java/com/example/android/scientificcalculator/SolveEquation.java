@@ -1,13 +1,12 @@
 package com.example.android.scientificcalculator;
 
-import android.support.annotation.NonNull;
+import android.widget.Toast;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
+import static android.R.string.no;
+import static com.example.android.scientificcalculator.priorityMap.getValue;
 import static java.lang.Integer.parseInt;
 
 /**
@@ -16,7 +15,6 @@ import static java.lang.Integer.parseInt;
 
 public class SolveEquation {
     private Stack<String> stack = new Stack();
-    private Vector<Double> numVec = new Vector<>();
     private Vector<String> funcVec = new Vector<>();
     double finalValue;
     private int index;
@@ -24,7 +22,6 @@ public class SolveEquation {
     SolveEquation(String eq){
         parseEquation(eq);
     }
-
     private int parseEquation(String eq){
         //Go through the equation and parse num, operand, parentheses.
         index = 0;
@@ -32,15 +29,17 @@ public class SolveEquation {
             char current = eq.charAt(index);
             //Current char is number. Parse number.
             if( current > 47 && current < 58 ){
-                numVec.add(parseNum(eq));
+                funcVec.add(parseNumtoStr(eq));
+                index--;//Since parsefunc increments already.
             }
             else if(current == '(')
                 stack.push(Character.toString('('));
 
             else if(current == 't' || current == 'c' || current == 's' || current == 'l' || current == 'e'){
                 String strFunc = parseFunc(eq);
-                if(strFunc.compareTo("-1") == 0)
+                if(strFunc.compareTo("-1") != 0)
                     handleStack(strFunc);
+                index--;//To not skip '(' character
             }
             else if(current == '+' || current == '-' || current == '*' || current == '/' || current == '%'){
                 handleStack(current + "");
@@ -52,9 +51,11 @@ public class SolveEquation {
             if(index == eq.length())
                 break;
         }
+        for(int i = 0 ; i <= stack.size();i++)
+            funcVec.add(stack.pop());
         return 0;
     }
-    private double parseNum(String eq){
+    private double parseNumtoDouble(String eq){
         double toReturn = 0;
         double coefficient = 10;
         boolean haveDot = false;
@@ -80,6 +81,16 @@ public class SolveEquation {
                 break;
         }
 
+        return toReturn;
+    }
+    private String parseNumtoStr(String eq){
+        String toReturn = "";
+        while( eq.charAt(index) == '.' || (eq.charAt(index) > 47 && eq.charAt(index) < 58)  ){
+           toReturn +=eq.charAt(index);
+            index++;
+            if(index == eq.length())
+                break;
+        }
         return toReturn;
     }
     private String parseFunc(String eq){
@@ -129,17 +140,29 @@ public class SolveEquation {
         }
         //Stack is not empty.
         else{
-            // If character is ) pop from stack to vector untill ( character.
-            if(node.compareTo(")") ==0){
-                while(stack.peek().compareTo("(") != 0){
+            // If character is ) pop from stack to vector until '(' character.
+            if(node.compareTo(")") == 0){
+                while( !stack.empty() && stack.peek().compareTo("(") != 0){
                     funcVec.add(stack.pop());
                 }
-                stack.pop();//For the ( character.
+                if(!stack.empty())
+                    stack.pop();//For the ( character.
             }
             else{
                 String top = stack.peek(); // Get the top element to Compare.
-
+                if( priorityMap.getValue(top) >= priorityMap.getValue(node)){ // Top element has equal or bigger priority.
+                    funcVec.add(stack.pop());
+                    stack.push(node);
+                }
+                else //New node has bigger priority.
+                    stack.push(node);
             }
         }
+    }
+    public String retVec(){
+        String toToast = "";
+        for(int i = 0; i < funcVec.size();i++)
+            toToast += funcVec.get(i) + " ";
+        return toToast;
     }
 }

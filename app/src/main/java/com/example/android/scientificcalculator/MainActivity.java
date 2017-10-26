@@ -40,5 +40,6 @@ public class MainActivity extends AppCompatActivity {
         String equation = expression.getText().toString();
         SolveEquation solver = new SolveEquation(equation);
         Toast.makeText(getBaseContext(),equation,Toast.LENGTH_SHORT ).show();
+        Toast.makeText(getBaseContext(),solver.retVec() ,Toast.LENGTH_SHORT ).show();
     }
 }
