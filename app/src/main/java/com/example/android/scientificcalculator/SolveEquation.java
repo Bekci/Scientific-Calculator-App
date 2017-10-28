@@ -6,6 +6,7 @@ import java.util.Stack;
 import java.util.Vector;
 
 import static android.R.string.no;
+import static android.os.Build.VERSION_CODES.M;
 import static com.example.android.scientificcalculator.priorityMap.getValue;
 import static java.lang.Integer.parseInt;
 
@@ -14,12 +15,18 @@ import static java.lang.Integer.parseInt;
  */
 
 public class SolveEquation {
+    private double ans;
     private Stack<String> stack = new Stack();
+    private Stack<Double> numStack = new Stack();
     private Vector<String> funcVec = new Vector<>();
     double finalValue;
     private int index;
 
-    SolveEquation(String eq){
+    SolveEquation(String eq,double inAns){
+        ans = inAns;
+        if(!stack.empty())stack.clear();
+        if(!numStack.empty())numStack.clear();
+        if(!funcVec.isEmpty()) funcVec.clear();
         parseEquation(eq);
     }
     private int parseEquation(String eq){
@@ -59,7 +66,7 @@ public class SolveEquation {
         double toReturn = 0;
         double coefficient = 10;
         boolean haveDot = false;
-
+        index = 0;
         while( eq.charAt(index) == '.' || (eq.charAt(index) > 47 && eq.charAt(index) < 58)  ){
 
             if (eq.charAt(index) == '.'){
@@ -85,7 +92,7 @@ public class SolveEquation {
     }
     private String parseNumtoStr(String eq){
         String toReturn = "";
-        while( eq.charAt(index) == '.' || (eq.charAt(index) > 47 && eq.charAt(index) < 58)  ){
+        while( eq.charAt(index) == '.' || ( eq.charAt(index) > 47 && eq.charAt(index) < 58)  ){
            toReturn +=eq.charAt(index);
             index++;
             if(index == eq.length())
@@ -159,10 +166,105 @@ public class SolveEquation {
             }
         }
     }
-    public String retVec(){
-        String toToast = "";
-        for(int i = 0; i < funcVec.size();i++)
-            toToast += funcVec.get(i) + " ";
-        return toToast;
+
+    public double solvePostFix(){
+        finalValue = 0;
+        double first = 0,second = 0;
+        for( ; !funcVec.isEmpty() ; funcVec.removeElementAt(0)){
+            if(funcVec.get(0).charAt(0) > 47 && funcVec.get(0).charAt(0) < 58){//Element is a number
+                numStack.push(parseNumtoDouble(funcVec.get(0)));//Push number to stack
+            }
+            else{
+                switch (funcVec.get(0)){
+                    case "+":
+                        if (!numStack.empty()) second = numStack.pop();
+                        if (!numStack.empty()) first = numStack.pop();
+                        numStack.push(first+second);
+                        break;
+                    case "-":
+                        if (!numStack.empty()) second = numStack.pop();
+                        if (!numStack.empty()) first = numStack.pop();
+                        numStack.push(first-second);
+                        break;
+                    case "*":
+                        if (!numStack.empty()) second = numStack.pop();
+                        if (!numStack.empty()) first = numStack.pop();
+                        numStack.push(first*second);
+                        break;
+                    case "/":
+                        if (!numStack.empty()) second = numStack.pop();
+                        if (!numStack.empty()) first = numStack.pop();
+                        numStack.push(first/second);
+                        break;
+                    case "%":
+                        if (!numStack.empty()) second = numStack.pop();
+                        if (!numStack.empty()) first = numStack.pop();
+                        numStack.push(first%second);
+                        break;
+                    case "sin":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.sin(second) );
+                        break;
+                    case "cos":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.cos(second) );
+                        break;
+                    case "tan":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.tan(second) );
+                        break;
+                    case "cot":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( 1.0 / Math.tan(second) );
+                        break;
+                    case "arccos":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.acos(second) );
+                        break;
+                    case "arcsin":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.asin(second) );
+                        break;
+                    case "arctan":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.atan(second) );
+                        break;
+                    case "arccot":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( 1.0 / Math.atan(second) );
+                        break;
+                    case "^":
+                        if (!numStack.empty()) second = numStack.pop();
+                        if (!numStack.empty()) first = numStack.pop();
+                        numStack.push( Math.pow(first,second));
+                        break;
+                    case "e^":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.exp(second));
+                        break;
+                    case "ln":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.log(second) );
+                        break;
+                    case "log":
+                        if (!numStack.empty()) second = numStack.pop();
+                        if (!numStack.empty()) first = numStack.pop();
+                        numStack.push( Math.log10(second) / Math.log10(first) );
+                        break;
+                    case "log2":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.log10(second) / Math.log10(2.0) );
+                        break;
+                    case "sqrt":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( Math.sqrt(second));
+                        break;
+                }
+            }
+        }
+        if (!numStack.empty())
+            finalValue = numStack.pop();
+    return finalValue;
     }
+
 }

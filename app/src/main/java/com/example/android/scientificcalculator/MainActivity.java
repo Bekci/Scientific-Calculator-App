@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Replace edit text with textview
     private EditText expression;
-    private double abs;
+    private double ans;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +38,10 @@ public class MainActivity extends AppCompatActivity {
     }
     public void Solve(View view){
         String equation = expression.getText().toString();
-        SolveEquation solver = new SolveEquation(equation);
-        Toast.makeText(getBaseContext(),equation,Toast.LENGTH_SHORT ).show();
-        Toast.makeText(getBaseContext(),solver.retVec() ,Toast.LENGTH_SHORT ).show();
+        SolveEquation solver = new SolveEquation(equation,ans);
+        //Toast.makeText(getBaseContext(),equation,Toast.LENGTH_SHORT ).show();
+        double val = solver.solvePostFix();
+        ans = val;
+        Toast.makeText(getBaseContext(),Double.toString(val),Toast.LENGTH_SHORT ).show();
     }
 }
