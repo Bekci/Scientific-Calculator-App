@@ -35,6 +35,11 @@ public class ButtonFunctions {
         else if(tag.endsWith("exp")){
             toReturn = "e^(";
         }
+        else if(tag.endsWith("inv")){
+            toReturn = "arc" + tag.toString().substring(0,3) + "(";
+        }
+        else if(tag.endsWith("ans"))
+            toReturn = "ans";
         else{
             toReturn = "Not assigned yet";
         }

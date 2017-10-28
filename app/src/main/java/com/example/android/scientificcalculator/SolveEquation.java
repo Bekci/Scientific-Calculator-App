@@ -1,15 +1,7 @@
 package com.example.android.scientificcalculator;
 
-import android.widget.Toast;
-
 import java.util.Stack;
 import java.util.Vector;
-
-import static android.R.string.no;
-import static android.os.Build.VERSION_CODES.M;
-import static com.example.android.scientificcalculator.priorityMap.getValue;
-import static java.lang.Integer.parseInt;
-
 /**
  * Created by Burak on 10.10.2017.
  */
@@ -42,7 +34,7 @@ public class SolveEquation {
             else if(current == '(')
                 stack.push(Character.toString('('));
 
-            else if(current == 't' || current == 'c' || current == 's' || current == 'l' || current == 'e'){
+            else if(current ==  'a' || current == 't' || current == 'c' || current == 's' || current == 'l' || current == 'e'){
                 String strFunc = parseFunc(eq);
                 if(strFunc.compareTo("-1") != 0)
                     handleStack(strFunc);
@@ -103,6 +95,25 @@ public class SolveEquation {
     private String parseFunc(String eq){
         String toReturn  = new String();
         toReturn = "-1";
+        if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'r' && eq.charAt(index+2) == 'c'){
+            if(eq.charAt(index+3) == 't' && eq.charAt(index+4) == 'a' && eq.charAt(index+5) == 'n'){
+                index += 6;
+                toReturn ="arctan";
+            }
+            else if(eq.charAt(index+3) == 'c' && eq.charAt(index+4) == 'o' && eq.charAt(index+5) == 't'){
+                index +=6;
+                toReturn = "arccot";
+            }
+            else if(eq.charAt(index+3) == 'c' && eq.charAt(index+4) == 'o' && eq.charAt(index+5) == 's'){
+                index +=6;
+                toReturn = "arccos";
+            }
+            else if(eq.charAt(index+3) == 's' && eq.charAt(index+4) == 'i' && eq.charAt(index+5) == 'n'){
+                index +=6;
+                toReturn = "arcsin";
+            }
+        }
+
         if(eq.charAt(index) == 't' && eq.charAt(index+1) == 'a' && eq.charAt(index+2) == 'n'){
             index += 3;
             toReturn ="tan";

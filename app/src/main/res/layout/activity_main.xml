@@ -352,7 +352,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:onClick="buttonClicked"
-                android:text="none" />
+                android:tag="ans"
+                android:text="ANS" />
 
             <Button
                 android:id="@+id/but_abs"
