@@ -31,10 +31,13 @@ public class SolveEquation {
                 funcVec.add(parseNumtoStr(eq));
                 index--;//Since parsefunc increments already.
             }
+            else if(current == 'e' && index +1 < eq.length() &&eq.charAt(index+1) != '^' ){
+                funcVec.add(Double.toString(2.718281828459045));
+            }
             else if(current == '(')
                 stack.push(Character.toString('('));
 
-            else if(current ==  'a' || current == 't' || current == 'c' || current == 's' || current == 'l' || current == 'e'){
+            else if(current == 'd' || current ==  'a' || current =='f' || current == 't' || current == 'c' || current == 's' || current == 'l' || current == 'e'){
                 String strFunc = parseFunc(eq);
                 if(strFunc.compareTo("-1") != 0)
                     handleStack(strFunc);
@@ -50,7 +53,7 @@ public class SolveEquation {
             if(index == eq.length())
                 break;
         }
-        for(int i = 0 ; i <= stack.size();i++)
+        for(int i = 0 ; i <= stack.size() && !stack.empty();i++)
             funcVec.add(stack.pop());
         return 0;
     }
@@ -95,7 +98,12 @@ public class SolveEquation {
     private String parseFunc(String eq){
         String toReturn  = new String();
         toReturn = "-1";
-        if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'r' && eq.charAt(index+2) == 'c'){
+        if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'n' && eq.charAt(index+2) == 's'){
+            index +=3;
+            toReturn = "ans";
+        }
+
+        else if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'r' && eq.charAt(index+2) == 'c'){
             if(eq.charAt(index+3) == 't' && eq.charAt(index+4) == 'a' && eq.charAt(index+5) == 'n'){
                 index += 6;
                 toReturn ="arctan";
@@ -113,8 +121,11 @@ public class SolveEquation {
                 toReturn = "arcsin";
             }
         }
-
-        if(eq.charAt(index) == 't' && eq.charAt(index+1) == 'a' && eq.charAt(index+2) == 'n'){
+        else if(eq.charAt(index) == 'd' && eq.charAt(index+1) == 'e' && eq.charAt(index+2) == 'm'){
+            index += 3;
+            toReturn = "dem";
+        }
+        else if(eq.charAt(index) == 't' && eq.charAt(index+1) == 'a' && eq.charAt(index+2) == 'n'){
             index += 3;
             toReturn ="tan";
         }
@@ -144,16 +155,27 @@ public class SolveEquation {
             index +=4;
             toReturn = "sqrt";
         }
+        else if(eq.charAt(index) == 'f' && eq.charAt(index+1) == 'a' && eq.charAt(index+2) == 'c'){
+            index += 3;
+            toReturn ="fac";
+        }
         else if(eq.charAt(index) == 'e' && eq.charAt(index+1) == '^') {
             index += 2;
             toReturn = "e^";
+        }
+        else if(eq.charAt(index) == 'l' && eq.charAt(index+1) == 'n'){
+            index +=2;
+            toReturn = "ln";
         }
 
         return toReturn;
     }
 
     private void handleStack(String node){
-        if(stack.isEmpty()){ // Stack is empty push function.
+        if(node.equals("ans")){
+            funcVec.add(Double.toString(ans));
+        }
+        else if(stack.isEmpty()){ // Stack is empty push function.
             stack.push(node);
         }
         //Stack is not empty.
@@ -177,7 +199,14 @@ public class SolveEquation {
             }
         }
     }
-
+    private double fac(double x){
+        double toRet = 1.0;
+        while(x > 1){
+            toRet *=x;
+            x--;
+        }
+        return toRet;
+    }
     public double solvePostFix(){
         finalValue = 0;
         double first = 0,second = 0;
@@ -269,6 +298,14 @@ public class SolveEquation {
                     case "sqrt":
                         if (!numStack.empty()) second = numStack.pop();
                         numStack.push( Math.sqrt(second));
+                        break;
+                    case "dem":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( 1/ second );
+                        break;
+                    case "fac":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push(fac(second));
                         break;
                 }
             }

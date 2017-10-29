@@ -23,6 +23,9 @@ public class ButtonFunctions {
         else if(tag.endsWith("root")){
             toReturn = "sqrt(";
         }
+        else if(tag.endsWith("clear")){
+            toReturn = "clear";
+        }
         else if(tag.endsWith("oprp")){
             toReturn = button.getText().toString() + "(";
         }
@@ -30,7 +33,7 @@ public class ButtonFunctions {
             toReturn = "^(";
         }
         else if(tag.endsWith("fac")){
-            toReturn = "!";
+            toReturn = "fac(";
         }
         else if(tag.endsWith("exp")){
             toReturn = "e^(";
@@ -40,6 +43,8 @@ public class ButtonFunctions {
         }
         else if(tag.endsWith("ans"))
             toReturn = "ans";
+        else if(tag.endsWith("demit"))
+            toReturn = "1/";
         else{
             toReturn = "Not assigned yet";
         }
