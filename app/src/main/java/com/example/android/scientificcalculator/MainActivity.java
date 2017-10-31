@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         if(toAddText.equals("clear")){
             if(expressionStr != null && expressionStr.length() > 0)
                 expressionStr = expressionStr.substring(0,expressionStr.length()-1);
+            else
+                expressionStr = "";
         }
         else{
             expressionStr = expression.getText().toString();
@@ -40,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
             expressionStr = expressionStr.substring(0,currentCursor) + toAddText + expressionStr.substring(currentCursor,expressionStr.length());
             //Push new equation to stack.
         }
-
         expression.setText(expressionStr);
         //At last set cursor place to end of text.
         expression.setSelection(expression.length());
