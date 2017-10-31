@@ -255,27 +255,27 @@ public class SolveEquation {
                         break;
                     case "sin":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.sin(second) );
+                        numStack.push( Math.sin( Math.toRadians(second) ) );
                         break;
                     case "cos":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.cos(second) );
+                        numStack.push(Math.cos( Math.toRadians(second) ) );
                         break;
                     case "tan":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.tan(second) );
+                        numStack.push(  Math.tan(Math.toRadians(second)) );
                         break;
                     case "cot":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( 1.0 / Math.tan(second) );
+                        numStack.push( 1.0 / Math.tan(Math.toRadians(second)) );
                         break;
                     case "arccos":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.acos(second) );
+                        numStack.push( Math.toDegrees(Math.acos(second)) );
                         break;
                     case "arcsin":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.asin(second) );
+                        numStack.push( Math.toDegrees(Math.asin(second)) );
                         break;
                     case "abs":
                         if (!numStack.empty()) second = numStack.pop();
@@ -283,11 +283,11 @@ public class SolveEquation {
                         break;
                     case "arctan":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.atan(second) );
+                        numStack.push( Math.toDegrees(Math.atan(second)) );
                         break;
                     case "arccot":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( 1.0 / Math.atan(second) );
+                        numStack.push( Math.toDegrees(1.0 / Math.atan(second)) );
                         break;
                     case "^":
                         if (!numStack.empty()) second = numStack.pop();

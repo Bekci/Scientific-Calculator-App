@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText expression;
     private double ans;
     private String expressionStr;
-    private Stack<String> eqStack = new Stack<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,13 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
         //CE button pressed. Change expression with older.
         if(toAddText.equals("clear")){
-            if (!eqStack.empty())
-                expressionStr = eqStack.pop();
-            if (!eqStack.empty())
-                expressionStr = eqStack.pop();
-            else{
-                expressionStr = "";
-            }
+            if(expressionStr != null && expressionStr.length() > 0)
+                expressionStr = expressionStr.substring(0,expressionStr.length()-1);
         }
         else{
             expressionStr = expression.getText().toString();
@@ -45,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
             //Place strings in cursor's place.
             expressionStr = expressionStr.substring(0,currentCursor) + toAddText + expressionStr.substring(currentCursor,expressionStr.length());
             //Push new equation to stack.
-            eqStack.push(expressionStr);
         }
 
         expression.setText(expressionStr);
