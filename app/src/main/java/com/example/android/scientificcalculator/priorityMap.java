@@ -10,9 +10,9 @@ import java.util.Map;
 public  class priorityMap{
 
     private static String [] keys = {"+","-","%","/","*","sin","cot","cos","ln","log2","log","e^","^",
-            "arccos","arccot","arcsin","arctan","(","tan","sqrt","dem","fac"};
-    private static Integer [] values = {1,1,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,0,2,2,2,2};
-    private static Integer [] elements = {2,2,2,2,2,1,1,1,1,1,1,1,2,1,1,1,1,0,2,1,1,1};
+            "arccos","arccot","arcsin","arctan","(","tan","sqrt","dem","fac","abs"};
+    private static Integer [] values = {1,1,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,0,2,2,2,2,2};
+    private static Integer [] elements = {2,2,2,2,2,1,1,1,1,1,1,1,2,1,1,1,1,0,2,1,1,1,1};
 
 
     public static Integer getValue(String k){

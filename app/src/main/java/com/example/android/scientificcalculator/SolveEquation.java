@@ -31,8 +31,13 @@ public class SolveEquation {
                 funcVec.add(parseNumtoStr(eq));
                 index--;//Since parsefunc increments already.
             }
+            else if(current == '^')
+                handleStack(current + "");
             else if(current == 'e' && index +1 < eq.length() &&eq.charAt(index+1) != '^' ){
                 funcVec.add(Double.toString(2.718281828459045));
+            }
+            else if(current == 'π'){
+                funcVec.add(Double.toString(3.141592653589793238));
             }
             else if(current == '(')
                 stack.push(Character.toString('('));
@@ -101,6 +106,10 @@ public class SolveEquation {
         if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'n' && eq.charAt(index+2) == 's'){
             index +=3;
             toReturn = "ans";
+        }
+        else if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'b' && eq.charAt(index+2) == 's'){
+            index +=3;
+            toReturn = "abs";
         }
 
         else if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'r' && eq.charAt(index+2) == 'c'){
@@ -207,6 +216,9 @@ public class SolveEquation {
         }
         return toRet;
     }
+    private double abs(double x){
+        return x < 0 ? -x : x;
+    }
     public double solvePostFix(){
         finalValue = 0;
         double first = 0,second = 0;
@@ -264,6 +276,10 @@ public class SolveEquation {
                     case "arcsin":
                         if (!numStack.empty()) second = numStack.pop();
                         numStack.push( Math.asin(second) );
+                        break;
+                    case "abs":
+                        if (!numStack.empty()) second = numStack.pop();
+                        numStack.push( abs(second) );
                         break;
                     case "arctan":
                         if (!numStack.empty()) second = numStack.pop();
