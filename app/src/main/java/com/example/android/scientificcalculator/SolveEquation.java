@@ -1,7 +1,13 @@
 package com.example.android.scientificcalculator;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Stack;
 import java.util.Vector;
+
+import static android.R.attr.value;
+
 /**
  * Created by Burak on 10.10.2017.
  */
@@ -67,9 +73,9 @@ public class SolveEquation {
         double coefficient = 10;
         boolean haveDot = false;
         index = 0;
-        while( eq.charAt(index) == '.' || (eq.charAt(index) > 47 && eq.charAt(index) < 58)  ){
+        while( eq.charAt(index) == ',' || eq.charAt(index) == '.' || (eq.charAt(index) > 47 && eq.charAt(index) < 58)  ){
 
-            if (eq.charAt(index) == '.'){
+            if (eq.charAt(index) == '.' || eq.charAt(index) == ','){
                 haveDot = true;
                 coefficient = 0.1;
                 index++;
@@ -219,6 +225,9 @@ public class SolveEquation {
     private double abs(double x){
         return x < 0 ? -x : x;
     }
+    private double roundNum(double x){
+        return (double)Math.round( x * 10000000000d) / 10000000000d;
+    }
     public double solvePostFix(){
         finalValue = 0;
         double first = 0,second = 0;
@@ -241,12 +250,12 @@ public class SolveEquation {
                     case "*":
                         if (!numStack.empty()) second = numStack.pop();
                         if (!numStack.empty()) first = numStack.pop();
-                        numStack.push(first*second);
+                        numStack.push(roundNum(first*second));
                         break;
                     case "/":
                         if (!numStack.empty()) second = numStack.pop();
                         if (!numStack.empty()) first = numStack.pop();
-                        numStack.push(first/second);
+                        numStack.push( roundNum(first/second));
                         break;
                     case "%":
                         if (!numStack.empty()) second = numStack.pop();
@@ -255,27 +264,27 @@ public class SolveEquation {
                         break;
                     case "sin":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.sin( Math.toRadians(second) ) );
+                        numStack.push( roundNum(Math.sin( Math.toRadians(second))));
                         break;
                     case "cos":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push(Math.cos( Math.toRadians(second) ) );
+                        numStack.push(roundNum(Math.cos( Math.toRadians(second) ) ));
                         break;
                     case "tan":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push(  Math.tan(Math.toRadians(second)) );
+                        numStack.push(  roundNum(Math.tan(Math.toRadians(second)) ));
                         break;
                     case "cot":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( 1.0 / Math.tan(Math.toRadians(second)) );
+                        numStack.push( roundNum(1.0 / Math.tan(Math.toRadians(second))));
                         break;
                     case "arccos":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.toDegrees(Math.acos(second)) );
+                        numStack.push( roundNum(Math.toDegrees(Math.acos(second))));
                         break;
                     case "arcsin":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.toDegrees(Math.asin(second)) );
+                        numStack.push( roundNum(Math.toDegrees(Math.asin(second))));
                         break;
                     case "abs":
                         if (!numStack.empty()) second = numStack.pop();
@@ -283,37 +292,37 @@ public class SolveEquation {
                         break;
                     case "arctan":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.toDegrees(Math.atan(second)) );
+                        numStack.push( roundNum(Math.toDegrees(Math.atan(second)) ));
                         break;
                     case "arccot":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.toDegrees(1.0 / Math.atan(second)) );
+                        numStack.push( roundNum(Math.toDegrees(1.0 / Math.atan(second))));
                         break;
                     case "^":
                         if (!numStack.empty()) second = numStack.pop();
                         if (!numStack.empty()) first = numStack.pop();
-                        numStack.push( Math.pow(first,second));
+                        numStack.push( roundNum(Math.pow(first,second)));
                         break;
                     case "e^":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.exp(second));
+                        numStack.push( roundNum(Math.exp(second)));
                         break;
                     case "ln":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.log(second) );
+                        numStack.push( roundNum(Math.log(second)));
                         break;
                     case "log":
                         if (!numStack.empty()) second = numStack.pop();
                         if (!numStack.empty()) first = numStack.pop();
-                        numStack.push( Math.log10(second) / Math.log10(first) );
+                        numStack.push( roundNum(Math.log10(second) / Math.log10(first)));
                         break;
                     case "log2":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.log10(second) / Math.log10(2.0) );
+                        numStack.push( roundNum(Math.log10(second) / Math.log10(2.0)));
                         break;
                     case "sqrt":
                         if (!numStack.empty()) second = numStack.pop();
-                        numStack.push( Math.sqrt(second));
+                        numStack.push( roundNum(Math.sqrt(second)));
                         break;
                     case "dem":
                         if (!numStack.empty()) second = numStack.pop();
