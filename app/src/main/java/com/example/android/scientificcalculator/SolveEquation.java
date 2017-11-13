@@ -73,13 +73,33 @@ public class SolveEquation {
         double coefficient = 10;
         boolean haveDot = false;
         index = 0;
-        while( eq.charAt(index) == ',' || eq.charAt(index) == '.' || (eq.charAt(index) > 47 && eq.charAt(index) < 58)  ){
+        while( eq.charAt(index) == ',' || eq.charAt(index) == '.' || (eq.charAt(index) > 47 && eq.charAt(index) < 58) || eq.charAt(index) == 'E'  ){
+            if(eq.charAt(index) == 'E'){
+                double pow = 0.0;
+                index++;
+                boolean isNegative = false;
+                double coefficient_of_pow = 10;
+                while (index != eq.length()){
+                    if(eq.charAt(index) == '-')//Current char is negative sign.
+                        isNegative = true;
+                    else{//Current char is a number.
+                        pow = pow * coefficient_of_pow + (eq.charAt(index) - '0');
+                        coefficient_of_pow *= 10;
+                    }
+                    index++;
+                }
+                if(isNegative == true)
+                    pow *= -1;
+                return Math.pow(toReturn,Math.pow(10,pow));
+            }
+
 
             if (eq.charAt(index) == '.' || eq.charAt(index) == ','){
                 haveDot = true;
                 coefficient = 0.1;
                 index++;
             }
+
             //Do decimal part.
             if(haveDot == false)
                 toReturn = toReturn * coefficient + (eq.charAt(index) - '0');
@@ -98,7 +118,7 @@ public class SolveEquation {
     }
     private String parseNumtoStr(String eq){
         String toReturn = "";
-        while( eq.charAt(index) == '.' || ( eq.charAt(index) > 47 && eq.charAt(index) < 58)  ){
+        while( eq.charAt(index) == '.' || ( eq.charAt(index) > 47 && eq.charAt(index) < 58) || eq.charAt(index) == 'E' || eq.charAt(index) == '-' ){
            toReturn +=eq.charAt(index);
             index++;
             if(index == eq.length())
