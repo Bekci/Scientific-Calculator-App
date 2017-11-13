@@ -226,7 +226,7 @@ public class SolveEquation {
         return x < 0 ? -x : x;
     }
     private double roundNum(double x){
-        return (double)Math.round( x * 10000000000d) / 10000000000d;
+        return (double)Math.round( x * 100000000000d) / 100000000000d;
     }
     public double solvePostFix(){
         finalValue = 0;
@@ -313,8 +313,7 @@ public class SolveEquation {
                         break;
                     case "log":
                         if (!numStack.empty()) second = numStack.pop();
-                        if (!numStack.empty()) first = numStack.pop();
-                        numStack.push( roundNum(Math.log10(second) / Math.log10(first)));
+                        numStack.push( roundNum(Math.log10(second)));
                         break;
                     case "log2":
                         if (!numStack.empty()) second = numStack.pop();
