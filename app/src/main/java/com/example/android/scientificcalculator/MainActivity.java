@@ -1,9 +1,19 @@
 package com.example.android.scientificcalculator;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.CharacterStyle;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,10 +51,25 @@ public class MainActivity extends AppCompatActivity {
 
         //CE button pressed. Change expression with older.
         if(toAddText.equals("clear")){
-            if(expressionStr != null && expressionStr.length() > 0)
-                expressionStr = expressionStr.substring(0,expressionStr.length()-1);
+
+            if(expressionStr != null && expressionStr.length() > 0){
+                currentCursor = expression.getSelectionStart();
+                String rightSide = new String("");
+                String leftSide = new String("");
+                if(currentCursor > 0)
+                    rightSide = expressionStr.substring(0,currentCursor-1);
+                leftSide = expressionStr.substring(currentCursor,expressionStr.length());
+                expressionStr = rightSide + leftSide;
+            }
             else
                 expressionStr = "";
+
+            expression.setText(expressionStr);
+            if(currentCursor < expressionStr.length())
+                expression.setSelection(currentCursor);
+            else{
+                expression.setSelection(expressionStr.length());
+            }
         }
         else{
             expressionStr = expression.getText().toString();
@@ -52,21 +77,28 @@ public class MainActivity extends AppCompatActivity {
             currentCursor = expression.getSelectionStart();
             //Place strings in cursor's place.
             expressionStr = expressionStr.substring(0,currentCursor) + toAddText + expressionStr.substring(currentCursor,expressionStr.length());
-            //Push new equation to stack.
-        }
-        expression.setText(expressionStr);
-        //At last set cursor place to where it belong.
-        if(currentCursor < expressionStr.length() - toAddText.length()){//At the cursor's position
-            expression.setSelection(currentCursor);
-        }
-        else{//At the end.
-            expression.setSelection(expressionStr.length());
+
+            //Make the eqn colorful
+            Spannable mSpan = expression.getText();
+
+            Spannable toAdd = new SpannableStringBuilder("1",0,1);
+            toAdd.setSpan(new ForegroundColorSpan(Color.BLUE),0,toAdd.length(), 0);
+            expression.setText(TextUtils.concat(mSpan,toAdd));
+
+            //expression.setText(expressionStr);
+
+            //At last set cursor place to where it belong.
+            if(currentCursor < expressionStr.length() - toAddText.length()){//At the cursor's position
+                expression.setSelection(currentCursor);
+            }
+            else{//At the end.
+                expression.setSelection(expressionStr.length());
+            }
         }
     }
     public void Solve(View view){
         String equation = expression.getText().toString();
         SolveEquation solver = new SolveEquation(equation,ans);
-        //Toast.makeText(getBaseContext(),equation,Toast.LENGTH_SHORT ).show();
         double val = solver.solvePostFix();
         ans = val;
         expression.setText(Double.toString(val));
