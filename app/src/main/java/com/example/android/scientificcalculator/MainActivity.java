@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         int  x = view.getId();
         Button button = (Button) findViewById(x);
         String toAddText = ButtonFunctions.getText(button);
+        ForegroundColorSpan color = ButtonFunctions.getColor(button);
         int currentCursor = 0;
 
         //CE button pressed. Change expression with older.
@@ -54,21 +55,19 @@ public class MainActivity extends AppCompatActivity {
 
             if(expressionStr != null && expressionStr.length() > 0){
                 currentCursor = expression.getSelectionStart();
-                String rightSide = new String("");
-                String leftSide = new String("");
-                if(currentCursor > 0)
-                    rightSide = expressionStr.substring(0,currentCursor-1);
-                leftSide = expressionStr.substring(currentCursor,expressionStr.length());
-                expressionStr = rightSide + leftSide;
+                if(currentCursor > 0){
+                    Spannable leftSpan = (Spannable) expression.getText().subSequence(0,currentCursor-1);
+                    Spannable rightSpan = (Spannable) expression.getText().subSequence(currentCursor,expression.length());
+                    expression.setText(TextUtils.concat(rightSpan,leftSpan));
+                }
             }
             else
-                expressionStr = "";
+                expression.setText("");
 
-            expression.setText(expressionStr);
-            if(currentCursor < expressionStr.length())
-                expression.setSelection(currentCursor);
+            if(currentCursor < expression.length())
+                expression.setSelection(currentCursor-1);
             else{
-                expression.setSelection(expressionStr.length());
+                expression.setSelection(expression.length());
             }
         }
         else{
@@ -81,11 +80,9 @@ public class MainActivity extends AppCompatActivity {
             //Make the eqn colorful
             Spannable mSpan = expression.getText();
 
-            Spannable toAdd = new SpannableStringBuilder("1",0,1);
-            toAdd.setSpan(new ForegroundColorSpan(Color.BLUE),0,toAdd.length(), 0);
+            Spannable toAdd = new SpannableStringBuilder(toAddText,0,toAddText.length());
+            toAdd.setSpan(color,0,toAdd.length(), 0);
             expression.setText(TextUtils.concat(mSpan,toAdd));
-
-            //expression.setText(expressionStr);
 
             //At last set cursor place to where it belong.
             if(currentCursor < expressionStr.length() - toAddText.length()){//At the cursor's position
