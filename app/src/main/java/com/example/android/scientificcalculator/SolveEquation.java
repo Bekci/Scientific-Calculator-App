@@ -1,5 +1,7 @@
 package com.example.android.scientificcalculator;
 
+import android.widget.Toast;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -19,13 +21,15 @@ public class SolveEquation {
     private Vector<String> funcVec = new Vector<>();
     double finalValue;
     private int index;
+    public int parsingRetVal;
 
     SolveEquation(String eq,double inAns){
         ans = inAns;
+        parsingRetVal = 1;
         if(!stack.empty())stack.clear();
         if(!numStack.empty())numStack.clear();
         if(!funcVec.isEmpty()) funcVec.clear();
-        parseEquation(eq);
+        parsingRetVal = parseEquation(eq);
     }
     private int parseEquation(String eq){
         //Go through the equation and parse num, operand, parentheses.
@@ -52,6 +56,9 @@ public class SolveEquation {
                 String strFunc = parseFunc(eq);
                 if(strFunc.compareTo("-1") != 0)
                     handleStack(strFunc);
+                else{//Unknown operation
+                    return -1;
+                }
                 index--;//To not skip '(' character
             }
             else if(current == '+' || current == '-' || current == '*' || current == '/' || current == '%'){
@@ -60,7 +67,9 @@ public class SolveEquation {
             else if(current == ')'){
                 handleStack(")");
             }
-
+            else{
+                return -1;
+            }
             if(index == eq.length())
                 break;
         }
@@ -126,82 +135,76 @@ public class SolveEquation {
         }
         return toReturn;
     }
-    private String parseFunc(String eq){
-        String toReturn  = new String();
+    private String parseFunc(String eq) {
+        String toReturn = new String();
         toReturn = "-1";
-        if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'n' && eq.charAt(index+2) == 's'){
-            index +=3;
-            toReturn = "ans";
-        }
-        else if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'b' && eq.charAt(index+2) == 's'){
-            index +=3;
-            toReturn = "abs";
-        }
-
-        else if(eq.charAt(index) == 'a' && eq.charAt(index+1) == 'r' && eq.charAt(index+2) == 'c'){
-            if(eq.charAt(index+3) == 't' && eq.charAt(index+4) == 'a' && eq.charAt(index+5) == 'n'){
-                index += 6;
-                toReturn ="arctan";
+        if(eq.length() > index +2  ){
+            if (eq.charAt(index) == 'a' && eq.charAt(index + 1) == 'n' && eq.charAt(index + 2) == 's') {
+                index += 3;
+                toReturn = "ans";
+            } else if (eq.charAt(index) == 'a' && eq.charAt(index + 1) == 'b' && eq.charAt(index + 2) == 's') {
+                index += 3;
+                toReturn = "abs";
+            } else if (eq.charAt(index) == 'a' && eq.charAt(index + 1) == 'r' && eq.charAt(index + 2) == 'c') {
+                if (eq.charAt(index + 3) == 't' && eq.charAt(index + 4) == 'a' && eq.charAt(index + 5) == 'n') {
+                    index += 6;
+                    toReturn = "arctan";
+                } else if (eq.charAt(index + 3) == 'c' && eq.charAt(index + 4) == 'o' && eq.charAt(index + 5) == 't') {
+                    index += 6;
+                    toReturn = "arccot";
+                } else if (eq.charAt(index + 3) == 'c' && eq.charAt(index + 4) == 'o' && eq.charAt(index + 5) == 's') {
+                    index += 6;
+                    toReturn = "arccos";
+                } else if (eq.charAt(index + 3) == 's' && eq.charAt(index + 4) == 'i' && eq.charAt(index + 5) == 'n') {
+                    index += 6;
+                    toReturn = "arcsin";
+                }
+            } else if (eq.charAt(index) == 'd' && eq.charAt(index + 1) == 'e' && eq.charAt(index + 2) == 'm') {
+                index += 3;
+                toReturn = "dem";
+            } else if (eq.charAt(index) == 't' && eq.charAt(index + 1) == 'a' && eq.charAt(index + 2) == 'n') {
+                index += 3;
+                toReturn = "tan";
+            } else if (eq.charAt(index) == 'c' && eq.charAt(index + 1) == 'o' && eq.charAt(index + 2) == 't') {
+                index += 3;
+                toReturn = "cot";
+            } else if (eq.charAt(index) == 'c' && eq.charAt(index + 1) == 'o' && eq.charAt(index + 2) == 's') {
+                index += 3;
+                toReturn = "cos";
+            } else if (eq.charAt(index) == 's' && eq.charAt(index + 1) == 'i' && eq.charAt(index + 2) == 'n') {
+                index += 3;
+                toReturn = "sin";
+            } else if (eq.charAt(index) == 'l' && eq.charAt(index + 1) == 'o' && eq.charAt(index + 2) == 'g'
+                    && eq.charAt(index + 3) == '2') {
+                index += 4;
+                toReturn = "log2";
+            } else if (eq.charAt(index) == 'l' && eq.charAt(index + 1) == 'o' && eq.charAt(index + 2) == 'g') {
+                index += 3;
+                toReturn = "log";
+            } else if (eq.charAt(index) == 's' && eq.charAt(index + 1) == 'q' && eq.charAt(index + 2) == 'r'
+                    && eq.charAt(index + 3) == 't') {
+                index += 4;
+                toReturn = "sqrt";
+            } else if (eq.charAt(index) == 'f' && eq.charAt(index + 1) == 'a' && eq.charAt(index + 2) == 'c') {
+                index += 3;
+                toReturn = "fac";
             }
-            else if(eq.charAt(index+3) == 'c' && eq.charAt(index+4) == 'o' && eq.charAt(index+5) == 't'){
-                index +=6;
-                toReturn = "arccot";
+        }
+        else if(eq.length() > index + 1 ){
+            if(eq.charAt(index) == 'e' && eq.charAt(index+1) == '^') {
+                index += 2;
+                toReturn = "e^";
             }
-            else if(eq.charAt(index+3) == 'c' && eq.charAt(index+4) == 'o' && eq.charAt(index+5) == 's'){
-                index +=6;
-                toReturn = "arccos";
+            else if(eq.charAt(index) == 'l' && eq.charAt(index+1) == 'n'){
+                index +=2;
+                toReturn = "ln";
             }
-            else if(eq.charAt(index+3) == 's' && eq.charAt(index+4) == 'i' && eq.charAt(index+5) == 'n'){
-                index +=6;
-                toReturn = "arcsin";
+            else{//Entered value is unknown.
+                return "-1";
             }
         }
-        else if(eq.charAt(index) == 'd' && eq.charAt(index+1) == 'e' && eq.charAt(index+2) == 'm'){
-            index += 3;
-            toReturn = "dem";
-        }
-        else if(eq.charAt(index) == 't' && eq.charAt(index+1) == 'a' && eq.charAt(index+2) == 'n'){
-            index += 3;
-            toReturn ="tan";
-        }
-        else if(eq.charAt(index) == 'c' && eq.charAt(index+1) == 'o' && eq.charAt(index+2) == 't'){
-            index +=3;
-            toReturn = "cot";
-        }
-        else if(eq.charAt(index) == 'c' && eq.charAt(index+1) == 'o' && eq.charAt(index+2) == 's'){
-            index +=3;
-            toReturn = "cos";
-        }
-        else if(eq.charAt(index) == 's' && eq.charAt(index+1) == 'i' && eq.charAt(index+2) == 'n'){
-            index +=3;
-            toReturn = "sin";
-        }
-        else if(eq.charAt(index) == 'l' && eq.charAt(index+1) == 'o' && eq.charAt(index+2) == 'g'
-                && eq.charAt(index+3) == '2'){
-            index +=4;
-            toReturn = "log2";
-        }
-        else if(eq.charAt(index) == 'l' && eq.charAt(index+1) == 'o' && eq.charAt(index+2) == 'g'){
-            index +=3;
-            toReturn = "log";
-        }
-        else if(eq.charAt(index) == 's' && eq.charAt(index+1) == 'q' && eq.charAt(index+2) == 'r'
-                && eq.charAt(index+3) == 't'){
-            index +=4;
-            toReturn = "sqrt";
-        }
-        else if(eq.charAt(index) == 'f' && eq.charAt(index+1) == 'a' && eq.charAt(index+2) == 'c'){
-            index += 3;
-            toReturn ="fac";
-        }
-        else if(eq.charAt(index) == 'e' && eq.charAt(index+1) == '^') {
-            index += 2;
-            toReturn = "e^";
-        }
-        else if(eq.charAt(index) == 'l' && eq.charAt(index+1) == 'n'){
-            index +=2;
-            toReturn = "ln";
-        }
+        else
+            return "-1";
 
         return toReturn;
     }
@@ -242,10 +245,14 @@ public class SolveEquation {
         }
         return toRet;
     }
+
     private double abs(double x){
         return x < 0 ? -x : x;
     }
+
     private double roundNum(double x){
+        if(Double.isNaN(x))
+            parsingRetVal = -1;
         return (double)Math.round( x * 100000000000d) / 100000000000d;
     }
     public double solvePostFix(){
@@ -253,102 +260,132 @@ public class SolveEquation {
         double first = 0,second = 0;
         for( ; !funcVec.isEmpty() ; funcVec.removeElementAt(0)){
             if(funcVec.get(0).charAt(0) > 47 && funcVec.get(0).charAt(0) < 58){//Element is a number
+                 double a = Double.parseDouble(funcVec.get(0));
+                a  += a;
                 numStack.push(parseNumtoDouble(funcVec.get(0)));//Push number to stack
             }
             else{
                 switch (funcVec.get(0)){
                     case "+":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         if (!numStack.empty()) first = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push(first+second);
                         break;
                     case "-":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         if (!numStack.empty()) first = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push(first-second);
                         break;
                     case "*":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         if (!numStack.empty()) first = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push(roundNum(first*second));
                         break;
                     case "/":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         if (!numStack.empty()) first = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(first/second));
                         break;
                     case "%":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         if (!numStack.empty()) first = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push(first%second);
                         break;
                     case "sin":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.sin( Math.toRadians(second))));
                         break;
                     case "cos":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push(roundNum(Math.cos( Math.toRadians(second) ) ));
                         break;
                     case "tan":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push(  roundNum(Math.tan(Math.toRadians(second)) ));
                         break;
                     case "cot":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(1.0 / Math.tan(Math.toRadians(second))));
                         break;
                     case "arccos":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.toDegrees(Math.acos(second))));
                         break;
                     case "arcsin":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.toDegrees(Math.asin(second))));
                         break;
                     case "abs":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( abs(second) );
                         break;
                     case "arctan":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.toDegrees(Math.atan(second)) ));
                         break;
                     case "arccot":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.toDegrees(1.0 / Math.atan(second))));
                         break;
                     case "^":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         if (!numStack.empty()) first = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.pow(first,second)));
                         break;
                     case "e^":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.exp(second)));
                         break;
                     case "ln":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.log(second)));
                         break;
                     case "log":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.log10(second)));
                         break;
                     case "log2":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.log10(second) / Math.log10(2.0)));
                         break;
                     case "sqrt":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( roundNum(Math.sqrt(second)));
                         break;
                     case "dem":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push( 1/ second );
                         break;
                     case "fac":
                         if (!numStack.empty()) second = numStack.pop();
+                        else    parsingRetVal = -1;
                         numStack.push(fac(second));
                         break;
                 }
@@ -356,6 +393,7 @@ public class SolveEquation {
         }
         if (!numStack.empty())
             finalValue = numStack.pop();
+        else parsingRetVal = -1;
     return finalValue;
     }
 

@@ -68,6 +68,9 @@ public class ButtonFunctions {
         if(tag.endsWith("root") || tag.endsWith("abs") || tag.endsWith("pow") || tag.endsWith("fac") ){
             toReturn = new ForegroundColorSpan(Color.BLUE);
         }
+        else if(tag.endsWith("opr")){
+            toReturn = new ForegroundColorSpan(Color.parseColor("#00BFA5"));
+        }
         else if(tag.endsWith("oprp")){
             toReturn = new ForegroundColorSpan(Color.parseColor("#6A1B9A"));
         }

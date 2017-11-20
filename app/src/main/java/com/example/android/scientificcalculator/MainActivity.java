@@ -52,13 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
         //CE button pressed. Change expression with older.
         if(toAddText.equals("clear")){
-
-            if(expressionStr != null && expressionStr.length() > 0){
-                currentCursor = expression.getSelectionStart();
-                if(currentCursor > 0){
-                    Spannable leftSpan = (Spannable) expression.getText().subSequence(0,currentCursor-1);
-                    Spannable rightSpan = (Spannable) expression.getText().subSequence(currentCursor,expression.length());
-                    expression.setText(TextUtils.concat(rightSpan,leftSpan));
+            if(expression.getText() != null) {
+                expressionStr = expression.getText().toString();
+                if (expressionStr != null && expressionStr.length() > 0) {
+                    currentCursor = expression.getSelectionStart();
+                    if (currentCursor > 0) {
+                        Spannable leftSpan = (Spannable) expression.getText().subSequence(0, currentCursor - 1);
+                        Spannable rightSpan = (Spannable) expression.getText().subSequence(currentCursor, expression.length());
+                        expression.setText(TextUtils.concat(leftSpan, rightSpan));
+                    }
                 }
             }
             else
@@ -80,9 +82,11 @@ public class MainActivity extends AppCompatActivity {
             //Make the eqn colorful
             Spannable mSpan = expression.getText();
 
+            Spannable left_of_mSpan =(Spannable) mSpan.subSequence(0,currentCursor);
+            Spannable right_of_mSpan =(Spannable) mSpan.subSequence(currentCursor,mSpan.length());
             Spannable toAdd = new SpannableStringBuilder(toAddText,0,toAddText.length());
             toAdd.setSpan(color,0,toAdd.length(), 0);
-            expression.setText(TextUtils.concat(mSpan,toAdd));
+            expression.setText( TextUtils.concat(TextUtils.concat(left_of_mSpan,toAdd),right_of_mSpan));
 
             //At last set cursor place to where it belong.
             if(currentCursor < expressionStr.length() - toAddText.length()){//At the cursor's position
@@ -96,10 +100,19 @@ public class MainActivity extends AppCompatActivity {
     public void Solve(View view){
         String equation = expression.getText().toString();
         SolveEquation solver = new SolveEquation(equation,ans);
-        double val = solver.solvePostFix();
-        ans = val;
-        expression.setText(Double.toString(val));
-        //At last set cursor place to end of text.
-        expression.setSelection(expression.length());
+        if(solver.parsingRetVal == -1){//Unknown character in equation.
+            Toast.makeText(getApplicationContext(),"Invalid Character", Toast.LENGTH_LONG).show();
+        }
+        else{
+            double val = solver.solvePostFix();
+            if(solver.parsingRetVal != -1){
+                ans = val;
+                expression.setText(Double.toString(val));
+                //At last set cursor place to end of text.
+                expression.setSelection(expression.length());
+            }
+            else
+                Toast.makeText(getApplicationContext(),"Invalid or Missing Operand", Toast.LENGTH_LONG).show();
+        }
     }
 }
