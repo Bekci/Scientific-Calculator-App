@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.InputType;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -17,9 +18,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Stack;
+import java.util.logging.Filter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
             editText.setRawInputType(InputType.TYPE_NULL);
             editText.setFocusable(true);
         }
+    }
+
+    private static String coloredText(String text,String color)
+    {
+        return String.format("<font  color='%s'>%s</font>",color,text);
     }
     public void buttonClicked(View view){
         int  x = view.getId();
@@ -66,8 +74,11 @@ public class MainActivity extends AppCompatActivity {
             else
                 expression.setText("");
 
-            if(currentCursor < expression.length())
+            if(currentCursor < expression.length() && currentCursor > 0)
                 expression.setSelection(currentCursor-1);
+            else if(currentCursor == 0){//Delete first character or try to delete empty space.
+                expression.setSelection(currentCursor);
+            }
             else{
                 expression.setSelection(expression.length());
             }
@@ -78,15 +89,22 @@ public class MainActivity extends AppCompatActivity {
             currentCursor = expression.getSelectionStart();
             //Place strings in cursor's place.
             expressionStr = expressionStr.substring(0,currentCursor) + toAddText + expressionStr.substring(currentCursor,expressionStr.length());
-
             //Make the eqn colorful
-            Spannable mSpan = expression.getText();
 
-            Spannable left_of_mSpan =(Spannable) mSpan.subSequence(0,currentCursor);
-            Spannable right_of_mSpan =(Spannable) mSpan.subSequence(currentCursor,mSpan.length());
+            Spannable mSpan = new SpannableString(expression.getText());
+            Spannable left_of_mSpan = new SpannableString(mSpan.subSequence(0,currentCursor));
+            Spannable right_of_mSpan = new SpannableString(mSpan.subSequence(currentCursor,mSpan.length()));
+
             Spannable toAdd = new SpannableStringBuilder(toAddText,0,toAddText.length());
             toAdd.setSpan(color,0,toAdd.length(), 0);
+
             expression.setText( TextUtils.concat(TextUtils.concat(left_of_mSpan,toAdd),right_of_mSpan));
+
+
+            /*String left_of_cur = Html.toHtml(expression.getText());
+           // String right_of_cur =(String) expression.getText().toString().subSequence(currentCursor,expression.length());
+            String toAdd = coloredText(toAddText,"#ff0000");
+            expression.setText(Html.fromHtml(left_of_cur+/*right_of_curtoAdd),TextView.BufferType.SPANNABLE); */
 
             //At last set cursor place to where it belong.
             if(currentCursor < expressionStr.length() - toAddText.length()){//At the cursor's position

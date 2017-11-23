@@ -127,7 +127,7 @@ public class SolveEquation {
     }
     private String parseNumtoStr(String eq){
         String toReturn = "";
-        while( eq.charAt(index) == '.' || ( eq.charAt(index) > 47 && eq.charAt(index) < 58) || eq.charAt(index) == 'E' || eq.charAt(index) == '-' ){
+        while( eq.charAt(index) == '.' || ( eq.charAt(index) > 47 && eq.charAt(index) < 58) || eq.charAt(index) == 'E'){
            toReturn +=eq.charAt(index);
             index++;
             if(index == eq.length())
@@ -260,8 +260,6 @@ public class SolveEquation {
         double first = 0,second = 0;
         for( ; !funcVec.isEmpty() ; funcVec.removeElementAt(0)){
             if(funcVec.get(0).charAt(0) > 47 && funcVec.get(0).charAt(0) < 58){//Element is a number
-                 double a = Double.parseDouble(funcVec.get(0));
-                a  += a;
                 numStack.push(parseNumtoDouble(funcVec.get(0)));//Push number to stack
             }
             else{
